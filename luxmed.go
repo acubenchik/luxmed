@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"github.com/PuerkitoBio/goquery"
 	"log"
 	"net/http"
 	"net/url"
@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	logIn("alex.usavchenko", "P@ssw0rd")
+	logIn("", "")
 }
 
 func logIn(login string, password string) {
@@ -89,12 +89,12 @@ func logIn(login string, password string) {
 	searchRequest.Header.Set("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:37.0) Gecko/20100101 Firefox/37.0")
 	searchRequest.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	searchReponse, _ := client.Do(searchRequest)
-	//log.Println(err)
-	bytes, _ := ioutil.ReadAll(searchReponse.Body)
-	log.Println(string(bytes))
-	//document, _ := goquery.NewDocumentFromReader(authResponse.Body)
-	//document.Find("input").Each(func(i int, selection *goquery.Selection) {
-	//	log.Println(selection.Attr("value"))
-	//})
+
+	document, _ := goquery.NewDocumentFromReader(searchReponse.Body)
+	document.Find("table.reserveTable").Each(func(i int, selection *goquery.Selection) {
+		selection.Find("td[data-sort]").Each(func(i int, selection *goquery.Selection) {
+			log.Println(selection)
+		})
+	})
 
 }
