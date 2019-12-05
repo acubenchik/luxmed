@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/PuerkitoBio/goquery"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -10,7 +11,7 @@ import (
 )
 
 func main() {
-	logIn("alex.usavchenko", "")
+	logIn("alex.usavchenko", "P@ssw0rd")
 }
 
 func logIn(login string, password string) {
@@ -30,6 +31,11 @@ func logIn(login string, password string) {
 	authResponse, _ := client.Do(request)
 	bytes, _ := ioutil.ReadAll(authResponse.Body)
 	log.Println(string(bytes))
+	defer authResponse.Body.Close()
+	document, _ := goquery.NewDocumentFromReader(authResponse.Body)
+	document.Find("html").Each(func(i int, selection *goquery.Selection) {
+		log.Println(i)
+	})
 
 
 
